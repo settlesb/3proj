@@ -1,4 +1,4 @@
-CFLAGS =  -Werror -Wall  
+CFLAGS =  -Werror -Wall -lm
 COVFLAGS = -fprofile-arcs -ftest-coverage
 PROFFLAG = -pg
 GCC = gcc $(CFLAGS) # $(COVFLAGS) $(PROFFLAG)
@@ -23,7 +23,7 @@ all: comp adjacent.o
 	# $(GCC) shortestpath1.o -o shortestpath1
 comp: adjacent.c 
 	#gcc -Werror -Wall file1.c file2.c ... -o shortestpath
-	$(GCC) adjacent.c -o adjacent -lm
+	$(GCC) adjacent.c -o adjacent 
 memory: 
 	# valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./pa15 inputs/gophers gophers_sorted gophers_huffman gophers_header
 	# valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./pa15 inputs/basic basic_sorted basic_huffman basic_header
