@@ -1,4 +1,4 @@
-CFLAGS =  -Werror -Wall -lm
+CFLAGS =  -Werror -Wall
 COVFLAGS = -fprofile-arcs -ftest-coverage
 PROFFLAG = -pg
 GCC = gcc $(CFLAGS) # $(COVFLAGS) $(PROFFLAG)
@@ -8,8 +8,17 @@ clean:
 	/bin/rm -f *.gcda *.gcno gmon.out *gcov
 test: all
 	echo "test1"
+	time ./shortestpath test.txt testquery.txt
 	time ./shortestpath usa.txt usa1.txt
-	# time ./shortestpath1 usa.txt usa1.txt
+	# time ./shortestpath usa.txt usa10.txt
+	# time ./shortestpath usa.txt usa100.txt
+	time ./shortestpath map5x5.txt query5x5.txt
+	time ./shortestpath map6.txt query2.txt
+	time ./adjacent map6.txt
+	time ./adjacent map5x5.txt
+	# time ./adjacent test.txt
+	# time ./adjacent usa.txt
+
 
 diff: all
 	diff gophers_header expected/gophers_header
@@ -18,12 +27,13 @@ diff: all
 	diff prideandprejudice_header expected/prideandprejudice_header
 	diff woods_header expected/woods_header
 
-all: comp adjacent.o 
-	$(GCC) adjacent.o -o shortestpath
-	# $(GCC) shortestpath1.o -o shortestpath1
+all: comp adjacent.o project3.o
+	$(GCC) project3.o -o shortestpath
+	$(GCC) adjacent.o -o adjacent
 comp: adjacent.c 
 	#gcc -Werror -Wall file1.c file2.c ... -o shortestpath
-	$(GCC) adjacent.c -o adjacent 
+	$(GCC) adjacent.c -o adjacent -lm
+	$(GCC) project3.c -o project3 -lm
 memory: 
 	# valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./pa15 inputs/gophers gophers_sorted gophers_huffman gophers_header
 	# valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./pa15 inputs/basic basic_sorted basic_huffman basic_header

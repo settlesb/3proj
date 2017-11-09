@@ -20,31 +20,6 @@ int Dijkstra(vtx v[], aList *alist, int A, int B, int verti);
 void freealist(aList* alist, int j);
 void freelist(aNode *anode);
 void call(vtx *vertices, int count1);
-void printalist(aList* alist, int n);
-void printlist(aNode *anode);
-void printalist(aList* alist, int n)
-{
-	int i = 0;
-	while(i<n)
-	{
-	  if(alist[i].hd != NULL)
-		{
-			printf("%d:",i);
-			printlist(alist[i].hd);
-			printf("\n");
-		} 
-		++i;
-	}
-}
-void printlist(aNode *anode)
-{
-  aNode *ptr = anode;
-  if(ptr != NULL)
-  {
-		printlist(ptr->nxt);
-		printf(" %d",ptr->ix);
-  }
-}
 void freealist(aList* alist, int j)
 {
 	int i = 0;
@@ -114,7 +89,7 @@ void call(vtx *vertices, int count1)
 }
 int main(int argc, char* argv[])
 {
-	int verti,edges,i, j,awght,count1; 
+	int verti,edges,nq, A,B,count1,i, j,awght;
 	FILE* fptr = fopen(argv[1],"r");
 	fscanf(fptr,"%d %d",&verti,&edges);
 	vtx vertices[verti]; 
@@ -146,10 +121,39 @@ int main(int argc, char* argv[])
 	  alist[j].hd = newNode;
   }
 	fclose(fptr);
-	printalist(alist,verti);
+	fptr = fopen(argv[2],"r");
+	fscanf(fptr,"%d",&nq);
+	for(count1 = 0;count1<nq;++count1)
+	{
+		fscanf(fptr,"%d %d",&A,&B);
+    if(Dijkstra(vertices,alist,A,B,verti))
+		{
+			int i = B,j=0;
+			printf("%d\n",vertices[B].dist);
+			route[j] = B;
+			++j;
+			while(i != A)
+			{
+			  route[j] = vertices[i].prnt;
+			  i = vertices[i].prnt;
+			  ++j;
+			}
+			--j; 
+			while(j >= 0)
+			{
+			  printf("%d ",route[j]);
+			  --j;
+			}
+			printf("\n");
+		}
+		for(count1 = 0; count1 < verti; ++count1)
+		{
+			call(vertices,count1);
+		}
+  }
+	fclose(fptr);
 	freealist(alist,verti);
 	return 0;
 }
-
 
 
