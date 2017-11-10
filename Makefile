@@ -1,4 +1,4 @@
-CFLAGS =  -Werror -Wall
+CFLAGS =  -Werror -Wall -lm
 COVFLAGS = -fprofile-arcs -ftest-coverage
 PROFFLAG = -pg
 GCC = gcc $(CFLAGS) # $(COVFLAGS) $(PROFFLAG)
