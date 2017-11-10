@@ -5,12 +5,12 @@
 int route[10000];
 typedef struct vnode
 {
-  int ix,prnt,x,y,dist,visit; 
+  int place,prnt,x,y,dist,visit; 
 }vtx;
 typedef struct aNode
 {
   struct aNode* nxt;
-  int wght,ix;
+  int wght,place;
 }aNode;
 typedef struct aList
 {
@@ -18,7 +18,6 @@ typedef struct aList
 }aList;
 int Dijkstra(vtx v[], aList *alist, int A, int B, int verti);
 void freealist(aList* alist, int j);
-void freelist(aNode *anode);
 void call(vtx *vertices, int count1);
 void freealist(aList* alist, int j)
 {
@@ -27,52 +26,49 @@ void freealist(aList* alist, int j)
 	{
 	  if(alist[i].hd != NULL)
 		{
-			freelist(alist[i].hd);
+			while (alist[i].hd != NULL)
+			{
+		   aNode *tmp = alist[i].hd;
+		   alist[i].hd= alist[i].hd->nxt;
+		   free(tmp);
+			}
 		} 
 		++i;
 	}
 	free(alist);
 }
-void freelist(aNode *anode)
-{
-  if(anode != NULL)
-  {
-		freelist(anode->nxt);
-		free(anode);
-  }
-}
 int Dijkstra(vtx v[], aList *alist, int A, int B, int verti)
 {
-	int curr = A,test=verti;
-	v[curr].dist = 0;
-	v[curr].visit = 1;
-	while(curr != B)
+	int test=verti,count;
+	v[A].visit = 1;
+	v[A].dist = 0;
+	while(A != B)
 	{
-		aNode *tmp = alist[curr].hd;
+		aNode *tmp = alist[A].hd;
 		while(tmp != NULL)
 		{
-			if(!v[tmp->ix].visit)
+			if(!v[tmp->place].visit)
 			{
-				if(v[tmp->ix].dist > v[curr].dist + tmp->wght)
+				if(v[tmp->place].dist > v[A].dist + tmp->wght)
 				{
-				  v[tmp->ix].dist = v[curr].dist + tmp->wght;
+				  v[tmp->place].dist = v[A].dist + tmp->wght;
 				}
-				v[tmp->ix].prnt = curr; 
+				v[tmp->place].prnt = A; 
 			}
 			tmp = tmp->nxt;
 		} 
-		int min = 100000,minix = 0,count; // max number = 100000
+		int min = 100000,minplace = 0; // max number = 100000
 		for(count=0;count<verti;++count)
 		{
 			if (v[count].visit == 0 && v[count].dist < min)
 			{
+				minplace = v[count].place;
 				min = v[count].dist;
-				minix = v[count].ix;
 			}
 		}
-		curr = minix;
-	  v[curr].visit = 1;
 	  --test;
+		A = minplace;
+	  v[A].visit = 1;
 	}
 	if(test==0)
 	{
@@ -82,9 +78,8 @@ int Dijkstra(vtx v[], aList *alist, int A, int B, int verti)
 }
 void call(vtx *vertices, int count1)
 {
+  vertices[count1].place = count1;
   vertices[count1].dist = 100000;
-  vertices[count1].prnt = -1;
-  vertices[count1].ix = count1;
   vertices[count1].visit = 0;
 }
 int main(int argc, char* argv[])
@@ -108,13 +103,13 @@ int main(int argc, char* argv[])
   	fscanf(fptr,"%d %d",&i,&j);
     awght = (sqrt((pow((vertices[i].x - vertices[j].x),2) + pow((vertices[j].y - vertices[i].y),2))));
   	aNode* newNode = malloc(sizeof(aNode));
-		newNode->ix = j;
+		newNode->place = j;
 		newNode->wght = awght;
 		newNode->nxt  = NULL;
     newNode->nxt = alist[i].hd;
     alist[i].hd = newNode;
   	newNode = malloc(sizeof(aNode));
-		newNode->ix = i;
+		newNode->place = i;
 		newNode->wght = awght;
 		newNode->nxt  = NULL;
 	  newNode->nxt = alist[j].hd;
@@ -129,8 +124,8 @@ int main(int argc, char* argv[])
     if(Dijkstra(vertices,alist,A,B,verti))
 		{
 			int i = B,j=0;
+			route[j] = i;
 			printf("%d\n",vertices[B].dist);
-			route[j] = B;
 			++j;
 			while(i != A)
 			{
@@ -151,8 +146,8 @@ int main(int argc, char* argv[])
 			call(vertices,count1);
 		}
   }
-	fclose(fptr);
 	freealist(alist,verti);
+	fclose(fptr);
 	return 0;
 }
 
