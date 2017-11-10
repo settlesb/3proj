@@ -57,7 +57,7 @@ int Dijkstra(vtx v[], aList *alist, int A, int B, int verti)
 			}
 			tmp = tmp->nxt;
 		} 
-		int min = 100000,minplace = 0; // max number = 100000
+		int min = 100000,minplace = 0;
 		for(count=0;count<verti;++count)
 		{
 			if (v[count].visit == 0 && v[count].dist < min)
@@ -84,7 +84,7 @@ void call(vtx *vertices, int count1)
 }
 int main(int argc, char* argv[])
 {
-	int verti,edges,nq, A,B,count1,i, j,awght;
+	int verti,edges,A,B,count1,i, j,awght;
 	FILE* fptr = fopen(argv[1],"r");
 	fscanf(fptr,"%d %d",&verti,&edges);
 	vtx vertices[verti]; 
@@ -117,10 +117,9 @@ int main(int argc, char* argv[])
   }
 	fclose(fptr);
 	fptr = fopen(argv[2],"r");
-	fscanf(fptr,"%d",&nq);
-	for(count1 = 0;count1<nq;++count1)
+	fscanf(fptr,"%d",&count1);
+	while(fscanf(fptr,"%d %d",&A,&B)!=EOF)
 	{
-		fscanf(fptr,"%d %d",&A,&B);
     if(Dijkstra(vertices,alist,A,B,verti))
 		{
 			int i = B,j=0;
